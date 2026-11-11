@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRM HRMS - Workforce & Talent Management System</title>
+  <!-- Tailwind CSS 3.4.17 -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #eef2f6; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @media print {
+      body * { visibility: hidden; }
+      #printablePayslip, #printablePayslip * { visibility: visible; }
+      #printablePayslip { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; }
+    }
+  </style>
+</head>
+<body class="bg-[#f3f5fa] text-slate-800 antialiased h-screen flex flex-col md:flex-row overflow-hidden">
+
+  <!-- Mobile Top Bar with Rabbit Logo -->
+  <div class="md:hidden bg-[#161426] border-b border-purple-900/40 text-white flex items-center justify-between p-3.5 z-50 shadow-md">
+    <div class="flex items-center space-x-3">
+      <!-- Rabbit Vector Drawing -->
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-400 via-pink-400 to-amber-300 p-1 flex items-center justify-center shadow-md shadow-rose-500/20">
+        <svg viewBox="0 0 100 100" class="w-8 h-8">
+          <path d="M38 48 C32 28, 28 8, 36 5 C43 2, 46 22, 44 46 Z" fill="#ffffff"/>
+          <path d="M37 40 C34 26, 32 12, 36 9 C39 7, 42 20, 41 38 Z" fill="#ffb4a2"/>
+          <path d="M62 48 C68 28, 72 8, 64 5 C57 2, 54 22, 56 46 Z" fill="#ffffff"/>
+          <path d="M63 40 C66 26, 68 12, 64 9 C61 7, 58 20, 59 38 Z" fill="#ffb4a2"/>
+          <ellipse cx="50" cy="63" rx="26" ry="22" fill="#ffffff"/>
+          <circle cx="41" cy="61" r="3" fill="#1e1b4b"/>
+          <circle cx="59" cy="61" r="3" fill="#1e1b4b"/>
+          <circle cx="42" cy="60" r="1" fill="#ffffff"/>
+          <circle cx="60" cy="60" r="1" fill="#ffffff"/>
+          <polygon points="48,68 52,68 50,70" fill="#f43f5e"/>
+          <path d="M50 70 Q47 73 44 72 M50 70 Q53 73 56 72" stroke="#475569" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="35" cy="67" rx="4" ry="2.5" fill="#fecdd3"/>
+          <ellipse cx="65" cy="67" rx="4" ry="2.5" fill="#fecdd3"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-black text-base tracking-tight leading-none text-white">SRM HRMS</h1>
+        <span class="text-[10px] text-pink-300 font-bold uppercase tracking-wider">Workforce Management</span>
+      </div>
+    </div>
+    <button id="mobileMenuBtn" class="text-slate-300 hover:text-white p-2 rounded-xl bg-purple-950/60 border border-purple-800/40">
+      <i class="fa-solid fa-bars text-lg"></i>
+    </button>
+  </div>
+
+  <!-- Left Sidebar (Features exactly aligned with video) -->
+  <aside id="sidebar" class="bg-[#161426] border-r border-purple-950 text-slate-300 w-64 flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out fixed inset-y-0 left-0 z-40 -translate-x-full md:relative md:translate-x-0 shadow-2xl md:shadow-none">
+    <div class="flex flex-col h-full overflow-y-auto">
+      
+      <!-- User Profile Header with Rabbit Drawing Avatar -->
+      <div class="p-4 border-b border-purple-900/30 flex items-center space-x-3.5 bg-[#0f0d1b]">
+        <div class="relative flex-shrink-0">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-amber-300 p-1 flex items-center justify-center shadow-lg shadow-rose-500/25 ring-2 ring-pink-400/40">
+            <!-- Custom Vector Rabbit Drawing -->
+            <svg viewBox="0 0 100 100" class="w-10 h-10">
+              <path d="M38 48 C32 28, 28 8, 36 5 C43 2, 46 22, 44 46 Z" fill="#ffffff"/>
+              <path d="M37 40 C34 26, 32 12, 36 9 C39 7, 42 20, 41 38 Z" fill="#ffb4a2"/>
+              <path d="M62 48 C68 28, 72 8, 64 5 C57 2, 54 22, 56 46 Z" fill="#ffffff"/>
+              <path d="M63 40 C66 26, 68 12, 64 9 C61 7, 58 20, 59 38 Z" fill="#ffb4a2"/>
+              <ellipse cx="50" cy="63" rx="26" ry="22" fill="#ffffff"/>
+              <circle cx="41" cy="61" r="3" fill="#1e1b4b"/>
+              <circle cx="59" cy="61" r="3" fill="#1e1b4b"/>
+              <circle cx="42" cy="60" r="1" fill="#ffffff"/>
+              <circle cx="60" cy="60" r="1" fill="#ffffff"/>
+              <polygon points="48,68 52,68 50,70" fill="#f43f5e"/>
+              <path d="M50 70 Q47 73 44 72 M50 70 Q53 73 56 72" stroke="#475569" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <ellipse cx="35" cy="67" rx="4" ry="2.5" fill="#fecdd3"/>
+              <ellipse cx="65" cy="67" rx="4" ry="2.5" fill="#fecdd3"/>
+            </svg>
+          </div>
+          <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-[#161426] rounded-full"></span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <h2 class="font-extrabold text-white text-xs truncate leading-snug">Sabiha Rumman Medha</h2>
+          <p class="text-[11px] text-pink-300 font-bold flex items-center gap-1 mt-0.5">
+            <span>Admin</span>
+            <span class="text-slate-500">&bull;</span>
+            <span class="text-slate-400 text-[10px]">Head of HR</span>
+          </p>
+        </div>
+        <button id="closeSidebarBtn" class="md:hidden text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Menu strictly covering all video sections -->
+      <nav class="flex-1 px-3 py-4 space-y-5">
+        <!-- 1. OVERVIEW -->
+        <div>
+          <span class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-purple-300/60">Overview</span>
+          <div class="mt-2 space-y-1">
+            <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-extrabold text-xs transition-all duration-200 text-white bg-gradient-to-r from-rose-500 to-pink-500 shadow-md shadow-rose-500/30" data-tab="dashboard">
+              <i class="fa-solid fa-chart-pie w-5 text-center text-white"></i>
+              <span>HR Dashboard</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. WORKFORCE MANAGEMENT -->
+        <div>
+          <span class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-purple-300/60">Workforce Management</span>
+          <div class="mt-2 space-y-1">
+            <button onclick="switchTab('directory')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="directory">
+              <i class="fa-solid fa-users w-5 text-center text-pink-400"></i>
+              <span>Employee Directory</span>
+            </button>
+            <button onclick="switchTab('addEmployee')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="addEmployee">
+              <i class="fa-solid fa-user-plus w-5 text-center text-pink-400"></i>
+              <span>Add New Employee</span>
+            </button>
+            <button onclick="switchTab('departments')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="departments">
+              <i class="fa-solid fa-building-user w-5 text-center text-pink-400"></i>
+              <span>Departments</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. PAYROLL & TIME -->
+        <div>
+          <span class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-purple-300/60">Payroll & Time</span>
+          <div class="mt-2 space-y-1">
+            <button onclick="switchTab('attendance')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="attendance">
+              <i class="fa-solid fa-calendar-check w-5 text-center text-pink-400"></i>
+              <span>Attendance Sheet</span>
+            </button>
+            <button onclick="switchTab('payroll')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="payroll">
+              <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-pink-400"></i>
+              <span>Payroll & Salary</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. ANALYTICS & REPORTS -->
+        <div>
+          <span class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-purple-300/60">Analytics & Reports</span>
+          <div class="mt-2 space-y-1">
+            <button onclick="switchTab('reports')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30" data-tab="reports">
+              <i class="fa-solid fa-chart-column w-5 text-center text-pink-400"></i>
+              <span>HR Reports & Analytics</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Bottom Platform Status (NO Log in or Log out button) -->
+      <div class="p-3 border-t border-purple-950 bg-[#0d0b17]">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-purple-950/40 border border-purple-900/30 text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white font-bold text-[11px]">SRM Platform Active</span>
+          </div>
+          <span class="text-[10px] font-mono text-pink-300 bg-pink-500/20 border border-pink-500/30 px-2 py-0.5 rounded-md font-bold">PRO</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Canvas Container -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-[#f3f5fa]">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-xs z-10 flex-shrink-0">
+      <div class="flex items-center space-x-4 flex-1 max-w-xl">
+        <!-- Candidate / Dept Dropdown -->
+        <div class="relative hidden sm:block">
+          <select id="topCandidateFilter" class="bg-[#1e1b4b] text-white text-xs font-bold px-3.5 py-2 rounded-xl focus:outline-none appearance-none pr-8 cursor-pointer shadow-xs">
+            <option value="All">All Workforce &#x25BE;</option>
+            <option value="Active">Active Team</option>
+            <option value="Former">Former Employees</option>
+            <option value="IT">IT & Engineering</option>
+            <option value="HR">Human Resources</option>
+          </select>
+          <i class="fa-solid fa-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-white/80 pointer-events-none text-xs"></i>
+        </div>
+
+        <!-- Global Search Bar -->
+        <div class="relative flex-1">
+          <input type="text" id="globalTopSearch" placeholder="Search employees, designations, email, ID..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-all">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        </div>
+      </div>
+
+      <!-- Date, Update Info & Add Employee in Header -->
+      <div class="flex items-center space-x-2.5">
+        <!-- Live Front Date & Clock Pill -->
+        <div class="flex items-center space-x-2 text-xs font-bold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
+          <i class="fa-regular fa-calendar-check text-rose-500"></i>
+          <span id="frontHeaderDate">Tuesday, 10 Nov 2026</span>
+          <span class="text-slate-300">|</span>
+          <i class="fa-regular fa-clock text-rose-500"></i>
+          <span id="frontHeaderClock" class="font-mono text-rose-600 font-extrabold">08:26 PM</span>
+        </div>
+
+        <!-- Update Info Action Button -->
+        <button onclick="openUpdateInfoModal()" title="Update System & Admin Info" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 hover:border-rose-300 text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-pen-to-square text-rose-500"></i>
+          <span class="hidden sm:inline">Update Info</span>
+        </button>
+
+        <!-- Add Employee Top Button from Video -->
+        <button onclick="switchTab('addEmployee')" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md shadow-rose-500/25 flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span>Add Employee</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Workspace Body Area -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-7 space-y-6">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: HR DASHBOARD -->
+      <!-- ========================================== -->
+      <section id="tab-dashboard" class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 bg-white p-4 rounded-2xl shadow-xs">
+          <div>
+            <h2 class="text-xl font-black tracking-tight text-slate-900">Welcome to HR Management Dashboard</h2>
+            <p class="text-xs text-slate-500">Real-time status of your workforce, departments, and payroll.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Front Date Badge on Dashboard -->
+            <div class="flex items-center space-x-2 text-xs font-bold text-slate-800 bg-[#f3f5fa] px-3.5 py-2 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-calendar-day text-rose-500"></i>
+              <span id="dashLiveDate">Tuesday, 10 November 2026</span>
+            </div>
+            <!-- Update Info Button on Dashboard -->
+            <button onclick="openUpdateInfoModal()" class="flex items-center space-x-2 text-xs font-bold text-[#1e1b4b] bg-pink-50 hover:bg-pink-100 border border-pink-200 px-3.5 py-2 rounded-xl shadow-xs transition-all">
+              <i class="fa-solid fa-pen-to-square text-rose-600"></i>
+              <span>Update Info</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Update Info & System Announcement Banner -->
+        <div class="bg-gradient-to-r from-[#161426] via-[#1e1b4b] to-[#161426] text-white p-4 rounded-2xl shadow-sm border border-purple-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-md flex-shrink-0">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-pink-300 font-mono">System Update Info</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              </div>
+              <p id="systemNoticeText" class="text-xs font-medium text-slate-200 mt-0.5">
+                Head of HR: <strong class="text-pink-300">Sabiha Rumman Medha</strong> &bull; November 2026 workforce records and attendance tracking are actively operational.
+              </p>
+            </div>
+          </div>
+          <button onclick="openUpdateInfoModal()" class="text-xs font-bold text-pink-300 hover:text-white bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-1.5 rounded-xl transition-all self-start sm:self-auto flex items-center gap-1.5 flex-shrink-0">
+            <i class="fa-solid fa-sliders text-xs"></i>
+            <span>Edit Info</span>
+          </button>
+        </div>
+
+        <!-- 4 Key Stat Cards from Video -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Total Employees -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Total Employees</span>
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-users"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 id="statTotalEmployees" class="text-3xl font-black text-slate-900">17</h3>
+              <p class="text-[11px] text-emerald-600 font-bold mt-1">&bull; Active staff records</p>
+            </div>
+          </div>
+
+          <!-- Departments -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Departments</span>
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-sitemap"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 id="statTotalDepts" class="text-3xl font-black text-slate-900">5</h3>
+              <p class="text-[11px] text-indigo-600 font-bold mt-1">&bull; Operating units</p>
+            </div>
+          </div>
+
+          <!-- Monthly Payroll -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Monthly Payroll</span>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 id="statMonthlyPayroll" class="text-2xl font-black text-slate-900 font-mono">$1,117,500.00</h3>
+              <p class="text-[11px] text-slate-400 font-bold mt-1">Total monthly payout</p>
+            </div>
+          </div>
+
+          <!-- Today's Attendance -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Today's Attendance</span>
+              <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-clipboard-user"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 id="statAttendanceRate" class="text-3xl font-black text-slate-900">100%</h3>
+              <p class="text-[11px] text-emerald-600 font-bold mt-1"><span id="statPresentCount">17</span> present on duty</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split View: Department Overview Table (NO BUDGET!) & Today's Attendance Widget -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Department Overview (NO BUDGET per user instruction) -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                <div>
+                  <h3 class="text-base font-black text-slate-900">Department Overview</h3>
+                  <p class="text-xs text-slate-500">Employee headcount and monthly payroll allocation per unit</p>
+                </div>
+                <button onclick="switchTab('departments')" class="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">
+                  Manage <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <th class="py-2.5 px-3">Department</th>
+                      <th class="py-2.5 px-3 text-center">Headcount</th>
+                      <th class="py-2.5 px-3 text-right">Monthly Payroll</th>
+                      <th class="py-2.5 px-3 w-36">Staff Share</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboardDeptTableBody" class="divide-y divide-slate-100 font-medium">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <h4 class="text-xs font-bold text-slate-600 mb-2">Department Payroll Allocation ($)</h4>
+              <div class="relative h-44 w-full">
+                <canvas id="deptPayrollChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Attendance Quick Widget with Open Sheet Button -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                <div>
+                  <h3 class="text-base font-black text-slate-900">Today's Attendance</h3>
+                  <p class="text-xs text-slate-500">Real-time attendance log</p>
+                </div>
+                <button onclick="switchTab('attendance')" class="text-xs font-bold text-rose-600 hover:text-rose-700">
+                  Open Sheet
+                </button>
+              </div>
+
+              <!-- Quick Status Cards -->
+              <div class="space-y-3">
+                <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
+                      <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-emerald-950">Present</p>
+                      <p class="text-[10px] text-emerald-700">On duty / at office / remote</p>
+                    </div>
+                  </div>
+                  <span id="dashPresentCount" class="text-lg font-black text-emerald-700 font-mono">17</span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center text-xs font-bold">
+                      <i class="fa-solid fa-user-xmark"></i>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-rose-950">Absent</p>
+                      <p class="text-[10px] text-rose-700">Unexcused absence</p>
+                    </div>
+                  </div>
+                  <span id="dashAbsentCount" class="text-lg font-black text-rose-700 font-mono">0</span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-xs font-bold">
+                      <i class="fa-solid fa-calendar-minus"></i>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-amber-950">On Leave</p>
+                      <p class="text-[10px] text-amber-700">Approved leave</p>
+                    </div>
+                  </div>
+                  <span id="dashLeaveCount" class="text-lg font-black text-amber-700 font-mono">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attendance Donut Chart -->
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <div class="relative h-40 w-full">
+                <canvas id="attendanceDoughnutChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: EMPLOYEE DIRECTORY -->
+      <!-- ========================================== -->
+      <section id="tab-directory" class="hidden space-y-5">
+        <!-- Sub-Tabs: Active Workforce vs Former Staff Archive -->
+        <div class="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-slate-200">
+          <div class="flex items-center space-x-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-xs">
+            <button onclick="switchWorkforceSubTab('active')" id="subtabBtnActive" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-user-check"></i>
+              <span>Active Workforce</span>
+              <span id="activeStaffCountPill" class="px-2 py-0.5 rounded-full text-[10px] bg-white text-rose-600 font-mono font-bold">17</span>
+            </button>
+            <button onclick="switchWorkforceSubTab('former')" id="subtabBtnFormer" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-box-archive"></i>
+              <span>Former Employees (Resigned Archive)</span>
+              <span id="formerStaffCountPill" class="px-2 py-0.5 rounded-full text-[10px] bg-slate-200 text-slate-700 font-mono font-bold">1</span>
+            </button>
+          </div>
+
+          <button onclick="switchTab('addEmployee')" class="bg-[#1e1b4b] hover:bg-indigo-900 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+            <i class="fa-solid fa-user-plus text-xs text-rose-400"></i> Add New Employee
+          </button>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3 flex-1">
+            <div class="relative flex-1 min-w-[220px]">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" id="employeeSearchInput" placeholder="Search by name, designation, email, ID..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500">
+            </div>
+
+            <select id="employeeDeptFilter" class="py-2 px-3 text-xs rounded-xl bg-white border border-slate-200 text-slate-700 font-medium">
+              <option value="ALL">All Departments</option>
+              <option value="IT & Engineering">IT & Engineering</option>
+              <option value="Finance & Accounts">Finance & Accounts</option>
+              <option value="Human Resources">Human Resources</option>
+              <option value="Marketing & Sales">Marketing & Sales</option>
+              <option value="Operations & Logistics">Operations & Logistics</option>
+            </select>
+
+            <select id="employeeStatusFilter" class="py-2 px-3 text-xs rounded-xl bg-white border border-slate-200 text-slate-700 font-medium">
+              <option value="ALL">All Status</option>
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Probation">Probation</option>
+            </select>
+          </div>
+
+          <span id="directoryCountBadge" class="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+            Showing 17 records
+          </span>
+        </div>
+
+        <!-- ACTIVE WORKFORCE TABLE -->
+        <div id="activeWorkforceContainer" class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#edf2fa] border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="py-3.5 px-4">Employee</th>
+                  <th class="py-3.5 px-4">Department & Role</th>
+                  <th class="py-3.5 px-4">Contact Info</th>
+                  <th class="py-3.5 px-4 text-right">Compensation</th>
+                  <th class="py-3.5 px-4 text-center">Status</th>
+                  <th class="py-3.5 px-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="directoryTableBody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- FORMER ARCHIVE CONTAINER (Preserving resigned employees) -->
+        <div id="formerWorkforceContainer" class="hidden space-y-4">
+          <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-box-archive"></i>
+              </div>
+              <div>
+                <h4 class="font-extrabold text-amber-950">Former Employee Archive (Permanent Record)</h4>
+                <p class="text-[11px] text-amber-800">Staff members who left or resigned retain complete historical details, past salary, and handover notes here.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-[#edf2fa] border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                  <tr>
+                    <th class="py-3.5 px-4">Former Employee</th>
+                    <th class="py-3.5 px-4">Last Role & Department</th>
+                    <th class="py-3.5 px-4">Separation Date</th>
+                    <th class="py-3.5 px-4">Reason & Handover Remarks</th>
+                    <th class="py-3.5 px-4 text-right">Last Basic Pay</th>
+                    <th class="py-3.5 px-4 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="formerTableBody" class="divide-y divide-slate-100">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: ADD NEW EMPLOYEE (Exact Onboarding Form from Video) -->
+      <!-- ========================================== -->
+      <section id="tab-addEmployee" class="hidden space-y-6">
+        <div class="max-w-4xl mx-auto space-y-6">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <div>
+              <h3 class="text-xl font-black text-slate-900">Employee Onboarding Form</h3>
+              <p class="text-xs text-slate-500">Fill in employee credentials, department assignment, and payroll structure.</p>
+            </div>
+            <button onclick="switchTab('directory')" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs">
+              <i class="fa-solid fa-arrow-left text-[11px] mr-1"></i> Back to Directory
+            </button>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-6">
+            <form id="onboardingForm" onsubmit="handleCreateEmployee(event)">
+              <!-- 1. BASIC & PROFESSIONAL INFORMATION -->
+              <div class="space-y-4">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#1e1b4b] pb-2 border-b border-slate-100">1. Basic & Professional Information</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Employee ID *</label>
+                    <input type="text" id="formEmpId" required class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 font-mono font-bold" value="#119">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+                    <input type="text" id="formEmpName" required placeholder="e.g. Rachel Adams" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Department *</label>
+                    <select id="formEmpDept" required class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                      <option value="">-- Choose Department --</option>
+                      <option value="IT & Engineering">IT & Engineering</option>
+                      <option value="Finance & Accounts">Finance & Accounts</option>
+                      <option value="Human Resources">Human Resources</option>
+                      <option value="Marketing & Sales">Marketing & Sales</option>
+                      <option value="Operations & Logistics">Operations & Logistics</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Job Designation *</label>
+                    <input type="text" id="formEmpTitle" required placeholder="e.g. Senior Software Engineer" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Work Email *</label>
+                    <input type="email" id="formEmpEmail" required placeholder="rachel@company.com" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                    <input type="text" id="formEmpPhone" placeholder="+880 1700-000000" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Date of Joining</label>
+                    <input type="date" id="formEmpJoinDate" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Employment Status</label>
+                    <select id="formEmpStatus" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200">
+                      <option value="Active">Active</option>
+                      <option value="Probation">Probation</option>
+                      <option value="On Leave">On Leave</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. COMPENSATION & PAYROLL STRUCTURE -->
+              <div class="space-y-4 pt-6 mt-6 border-t border-slate-100">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#1e1b4b] pb-2 border-b border-slate-100">2. Compensation & Payroll Structure</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Basic Monthly Salary ($) *</label>
+                    <input type="number" id="formEmpSalary" required step="100" min="1000" placeholder="e.g. 65000" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 font-mono">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Bonus / Perks ($)</label>
+                    <input type="number" id="formEmpBonus" step="50" min="0" placeholder="e.g. 5000" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 font-mono">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
+                <button type="reset" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Reset</button>
+                <button type="submit" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs font-extrabold px-6 py-2.5 rounded-xl shadow-md shadow-rose-500/25 flex items-center gap-2">
+                  <i class="fa-solid fa-check"></i> Register Employee
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: DEPARTMENTS (NO BUDGET PER USER REQUEST) -->
+      <!-- ========================================== -->
+      <section id="tab-departments" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <div>
+            <h3 class="text-xl font-black text-slate-900">Department Management</h3>
+            <p class="text-xs text-slate-500">Business units, operational divisions, headcounts, and office locations.</p>
+          </div>
+          <button onclick="openAddDeptModal()" class="bg-[#1e1b4b] hover:bg-indigo-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-plus text-xs"></i> Create Department
+          </button>
+        </div>
+
+        <!-- Department Cards Grid (BUDGET COMPLETELY REMOVED!) -->
+        <div id="departmentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Dynamically populated without any budget -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 5: ATTENDANCE SHEET -->
+      <!-- ========================================== -->
+      <section id="tab-attendance" class="hidden space-y-6">
+        <!-- Date Bar & Controls from Video -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center space-x-3">
+            <button onclick="changeAttendanceDate(-1)" class="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-700 hover:bg-slate-100">
+              <i class="fa-solid fa-chevron-left text-xs"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+              <i class="fa-regular fa-calendar-check text-rose-600"></i>
+              <span id="currentAttendanceDateText" class="font-extrabold text-sm text-slate-900">Tuesday, 10 November 2026</span>
+            </div>
+            <button onclick="changeAttendanceDate(1)" class="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-700 hover:bg-slate-100">
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="markAllAttendance('Present')" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1.5">
+              <i class="fa-solid fa-check-double text-xs"></i> Mark All Present
+            </button>
+            <button onclick="saveAttendanceSheet()" class="text-xs font-bold px-4 py-2 rounded-xl bg-[#1e1b4b] text-white hover:bg-indigo-900 flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-floppy-disk text-xs"></i> Save Attendance
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#edf2fa] border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="py-3 px-4">Emp ID</th>
+                  <th class="py-3 px-4">Employee Name</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4">Job Designation</th>
+                  <th class="py-3 px-4 text-center">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 6: PAYROLL & SALARY (NAMED EXACTLY AS REQUESTED) -->
+      <!-- ========================================== -->
+      <section id="tab-payroll" class="hidden space-y-6">
+        <!-- 4 Summary KPI Cards from Video -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Monthly Payroll</span>
+            <h3 id="payrollTotalMonthly" class="text-2xl font-black text-slate-900 mt-2 font-mono">$1,117,500.00</h3>
+            <p class="text-[11px] text-emerald-600 font-bold mt-1">Disbursed to active workforce</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Average Base Salary</span>
+            <h3 id="payrollAvgSalary" class="text-2xl font-black text-slate-900 mt-2 font-mono">$59,852.94</h3>
+            <p class="text-[11px] text-slate-500 font-bold mt-1">Per staff member</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Bonuses / Perks</span>
+            <h3 id="payrollTotalBonuses" class="text-2xl font-black text-slate-900 mt-2 font-mono">$100,000.00</h3>
+            <p class="text-[11px] text-pink-600 font-bold mt-1">Incentive payout pool</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Top Compensation</span>
+            <h3 class="text-2xl font-black text-slate-900 mt-2 font-mono">$90,250.00</h3>
+            <p class="text-[11px] text-slate-500 font-bold mt-1">Executive level</p>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h4 class="text-base font-black text-slate-900">Monthly Payroll Sheet: November 2026</h4>
+            <p class="text-xs text-slate-500">Staff compensation breakdown with automated 5% tax deduction & net payout</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="exportPayrollCSV()" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-csv text-emerald-600"></i> Export CSV
+            </button>
+            <button onclick="window.print()" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-[#1e1b4b] text-white hover:bg-indigo-900 flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-print text-xs"></i> Print Payroll Sheet
+            </button>
+          </div>
+        </div>
+
+        <!-- Payroll Table with Payslip Action Button -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#edf2fa] border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="py-3.5 px-4">Employee</th>
+                  <th class="py-3.5 px-4">Department</th>
+                  <th class="py-3.5 px-4 text-right">Basic Pay</th>
+                  <th class="py-3.5 px-4 text-right">Bonus / Perks</th>
+                  <th class="py-3.5 px-4 text-right">Gross Pay</th>
+                  <th class="py-3.5 px-4 text-right">Deduction (5%)</th>
+                  <th class="py-3.5 px-4 text-right">Net Payout</th>
+                  <th class="py-3.5 px-4 text-center">Payslip</th>
+                </tr>
+              </thead>
+              <tbody id="payrollTableBody" class="divide-y divide-slate-100 font-mono">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 7: HR REPORTS & ANALYTICS -->
+      <!-- ========================================== -->
+      <section id="tab-reports" class="hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-black text-slate-900">Comprehensive Workforce & Payroll Report</h3>
+            <p class="text-xs text-slate-500 font-mono">Columns: (employee_name, department_name, email, basic_salary, bonus, attendance_date, status)</p>
+          </div>
+
+          <button onclick="exportMasterReportCSV()" class="bg-[#2ea043] hover:bg-[#278637] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-1.5">
+            <i class="fa-solid fa-file-arrow-down"></i> Export Report CSV
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#edf2fa] border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="py-3.5 px-4">Employee Name</th>
+                  <th class="py-3.5 px-4">Department</th>
+                  <th class="py-3.5 px-4">Email Address</th>
+                  <th class="py-3.5 px-4 text-right">Basic Salary</th>
+                  <th class="py-3.5 px-4 text-right">Bonus</th>
+                  <th class="py-3.5 px-4 text-center">Attendance Date</th>
+                  <th class="py-3.5 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="masterReportTableBody" class="divide-y divide-slate-100 font-medium">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: UPDATE / PROMOTE DETAILS -->
+  <!-- ========================================== -->
+  
+  <!-- ========================================== -->
+  <!-- MODAL: UPDATE INFO & SYSTEM ANNOUNCEMENT -->
+  <!-- ========================================== -->
+  <div id="updateInfoModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-pink-50 text-rose-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm">Update System & Admin Info</h3>
+            <p class="text-[11px] text-slate-500">Edit company title, admin identity, or front notice</p>
+          </div>
+        </div>
+        <button onclick="closeUpdateInfoModal()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="updateInfoForm" onsubmit="handleSaveSystemInfo(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Company / Platform Title</label>
+          <input type="text" id="infoPlatformName" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold" value="SRM HRMS">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Admin Full Name</label>
+          <input type="text" id="infoAdminName" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold" value="Sabiha Rumman Medha">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Admin Job Designation</label>
+          <input type="text" id="infoAdminRole" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900" value="Head of HR & Admin">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Front Announcement / Update Note</label>
+          <textarea id="infoAnnouncement" rows="2" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900" placeholder="Enter notice to display on the front dashboard"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeUpdateInfoModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Cancel</button>
+          <button type="submit" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow-xs">
+            Save Updates
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="updateEmployeeModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-pink-50 text-rose-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-user-pen"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm">Update Employee Details & Promotion</h3>
+            <p class="text-[11px] text-slate-500">Modify designation, promote, or increase salary</p>
+          </div>
+        </div>
+        <button onclick="closeUpdateEmployeeModal()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="updateEmployeeForm" onsubmit="handleSaveEmployeeUpdate(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="editEmpTargetId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Full Name</label>
+            <input type="text" id="editEmpName" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Employee ID</label>
+            <input type="text" id="editEmpIdDisplay" disabled class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Department</label>
+            <select id="editEmpDept" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800">
+              <option value="IT & Engineering">IT & Engineering</option>
+              <option value="Finance & Accounts">Finance & Accounts</option>
+              <option value="Human Resources">Human Resources</option>
+              <option value="Marketing & Sales">Marketing & Sales</option>
+              <option value="Operations & Logistics">Operations & Logistics</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+              <span>Job Designation (Promotion)</span>
+              <span class="text-[10px] text-rose-600 font-bold"><i class="fa-solid fa-arrow-up-right-from-square"></i> Promote</span>
+            </label>
+            <input type="text" id="editEmpTitle" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold">
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-pink-50/60 border border-pink-200/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-rose-950">Compensation Adjustment</span>
+            <div class="flex gap-1.5">
+              <button type="button" onclick="applySalaryIncrement(5)" class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black hover:bg-rose-600">+5%</button>
+              <button type="button" onclick="applySalaryIncrement(10)" class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black hover:bg-rose-600">+10%</button>
+              <button type="button" onclick="applySalaryIncrement(15)" class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black hover:bg-rose-600">+15%</button>
+              <button type="button" onclick="applySalaryIncrement(20)" class="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-black hover:bg-rose-600">+20%</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] text-slate-600 mb-1">Basic Monthly Pay ($)</label>
+              <input type="number" id="editEmpSalary" required step="100" min="1000" class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 font-mono font-bold">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-600 mb-1">Bonus / Perks ($)</label>
+              <input type="number" id="editEmpBonus" step="50" min="0" class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 font-mono font-bold">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Work Email</label>
+            <input type="email" id="editEmpEmail" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Phone</label>
+            <input type="text" id="editEmpPhone" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeUpdateEmployeeModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Cancel</button>
+          <button type="submit" class="bg-[#1e1b4b] hover:bg-indigo-900 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Save & Apply
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: REMOVE / OFFBOARD EMPLOYEE -->
+  <!-- ========================================== -->
+  <div id="offboardModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-user-minus"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm">Remove & Offboard Employee</h3>
+            <p class="text-[11px] text-slate-500">Archive employee into Former Staff records</p>
+          </div>
+        </div>
+        <button onclick="closeOffboardModal()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+        <p class="text-slate-500">Employee being removed from active duty:</p>
+        <h4 id="offboardEmpName" class="font-bold text-slate-900 text-sm mt-0.5">Md. Rakibul Islam</h4>
+        <p id="offboardEmpRole" class="text-slate-600 text-xs">Senior Software Engineer (#101)</p>
+      </div>
+
+      <form id="offboardForm" onsubmit="handleConfirmOffboard(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="offboardTargetId">
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Separation Reason *</label>
+          <select id="offboardReason" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800">
+            <option value="Voluntary Resignation">Voluntary Resignation</option>
+            <option value="Career Relocation / New Offer">Career Relocation / New Offer</option>
+            <option value="Higher Studies">Higher Studies</option>
+            <option value="Personal Reasons">Personal Reasons</option>
+            <option value="Retirement">Retirement</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Effective Last Working Date *</label>
+          <input type="date" id="offboardDate" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Exit Clearance & Handover Remarks</label>
+          <textarea id="offboardNotes" rows="2" placeholder="e.g. Completed project handover, laptop and access keys returned." class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800"></textarea>
+        </div>
+
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900">
+          <i class="fa-solid fa-circle-info mr-1"></i>
+          This will move the employee to the <strong>Former Employees Archive</strong>. Their complete profile and payslip history remain permanently available.
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeOffboardModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Cancel</button>
+          <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold px-4 py-2 rounded-xl shadow-xs">
+            Confirm & Archive
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PRINTABLE PAYSLIP VOUCHER -->
+  <!-- ========================================== -->
+  <div id="payslipModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm">Official Salary Voucher</h3>
+            <p class="text-[11px] text-slate-500">Statement for November 2026</p>
+          </div>
+        </div>
+        <button onclick="closePayslipModal()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div id="printablePayslip" class="my-4 p-6 border border-slate-200 rounded-xl bg-slate-50 space-y-4 text-xs text-slate-800">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+          <div>
+            <h2 id="payslipCompany" class="text-lg font-black text-slate-900 tracking-tight">SRM HRMS</h2>
+            <p class="text-[11px] text-slate-500">Workforce & Human Resources Payroll</p>
+          </div>
+          <div class="text-right">
+            <span class="inline-block px-2.5 py-1 rounded bg-[#1e1b4b] text-white text-[10px] font-bold font-mono uppercase">CONFIDENTIAL</span>
+            <p class="text-[10px] text-slate-400 mt-1">Disbursement: 10 Nov 2026</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <span class="text-slate-400 text-[10px] uppercase font-bold">Employee Record</span>
+            <h4 id="payslipName" class="font-bold text-slate-900 text-sm mt-0.5">Rachel Adams</h4>
+            <p id="payslipRole" class="text-slate-600 text-xs">Senior Software Engineer</p>
+            <p id="payslipDept" class="text-slate-500 text-[11px]">IT & Engineering</p>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-400 text-[10px] uppercase font-bold">Identifier</span>
+            <p id="payslipEmpId" class="font-mono font-bold text-[#1e1b4b] text-xs mt-0.5">#101</p>
+            <p id="payslipEmail" class="text-slate-500 text-[11px]">rachel@company.com</p>
+            <p class="text-emerald-600 text-[11px] font-bold">Payment Status: DISBURSED</p>
+          </div>
+        </div>
+
+        <div class="space-y-2 font-mono">
+          <div class="flex justify-between py-1 text-slate-600">
+            <span>Basic Monthly Pay:</span>
+            <span id="payslipBasic" class="font-bold text-slate-900">$75,000.00</span>
+          </div>
+          <div class="flex justify-between py-1 text-slate-600">
+            <span>Incentive Bonus / Performance Perks:</span>
+            <span id="payslipBonus" class="font-bold text-emerald-600">+$8,000.00</span>
+          </div>
+          <div class="flex justify-between py-1 border-t border-slate-200 pt-1 font-bold text-slate-900">
+            <span>Gross Monthly Earnings:</span>
+            <span id="payslipGross">$83,000.00</span>
+          </div>
+          <div class="flex justify-between py-1 text-rose-600">
+            <span>Statutory Tax & PF Deduction (5%):</span>
+            <span id="payslipDeduction">-$4,150.00</span>
+          </div>
+          <div class="flex justify-between py-2.5 border-t-2 border-[#1e1b4b] font-black text-sm text-[#1e1b4b] bg-indigo-50/50 px-2 rounded">
+            <span>Net Take-Home Remittance:</span>
+            <span id="payslipNet" class="text-rose-600">$78,850.00</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-dashed border-slate-300 flex justify-between items-end text-[10px] text-slate-400">
+          <div>
+            <p>Authorized by: <strong class="text-slate-800">Sabiha Rumman Medha</strong></p>
+            <div class="h-6 border-b border-slate-400 w-36 mt-1"></div>
+            <p class="mt-1">Head of HR Approval</p>
+          </div>
+          <div class="text-right">
+            <p>Digitally signed & verified</p>
+            <p>Ref Code: SRM-PAY-2026-X9</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+        <button onclick="closePayslipModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Close</button>
+        <button onclick="window.print()" class="bg-[#1e1b4b] hover:bg-indigo-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i> Print Payslip
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADD DEPARTMENT (NO BUDGET!) -->
+  <!-- ========================================== -->
+  <div id="addDeptModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-black text-slate-900 text-sm">Create New Department</h3>
+        <button onclick="closeAddDeptModal()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="addDeptForm" onsubmit="handleCreateDepartment(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Department Name *</label>
+          <input type="text" id="newDeptName" required placeholder="e.g. Quality Assurance" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Department Code *</label>
+          <input type="text" id="newDeptCode" required placeholder="e.g. QA" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Office Location / Floor *</label>
+          <input type="text" id="newDeptLocation" required placeholder="e.g. Block C - 7th Floor" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeAddDeptModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100">Cancel</button>
+          <button type="submit" class="bg-[#1e1b4b] hover:bg-indigo-900 text-white text-xs font-extrabold px-4 py-2 rounded-xl shadow-xs">
+            Create Department
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT APPLICATION CORE -->
+  <!-- ========================================== -->
+  <script>
+    const APP_STATE = {
+      companyName: 'SRM HRMS',
+      adminName: 'Sabiha Rumman Medha',
+      adminRole: 'Head of HR & Admin',
+      currentTab: 'dashboard',
+      workforceSubTab: 'active',
+      attendanceDate: new Date(2026, 10, 10),
+
+      // Departments WITHOUT any budget (per user request)
+      departments: [
+        { id: 1, name: 'IT & Engineering', code: 'TECH', location: 'Tech Tower - 6th Floor', icon: 'fa-code' },
+        { id: 2, name: 'Finance & Accounts', code: 'FIN', location: 'Block A - 3rd Floor', icon: 'fa-coins' },
+        { id: 3, name: 'Human Resources', code: 'HR', location: 'Block A - 4th Floor', icon: 'fa-user-tie' },
+        { id: 4, name: 'Marketing & Sales', code: 'MKT', location: 'Block A - 2nd Floor', icon: 'fa-bullhorn' },
+        { id: 5, name: 'Operations & Logistics', code: 'OPS', location: 'Warehouse Hub - 1st Floor', icon: 'fa-truck-fast' }
+      ],
+
+      // Active employees
+      employees: [
+        { id: '#101', name: 'Md. Rakibul Islam', dept: 'IT & Engineering', title: 'Senior Software Engineer', email: 'rakibul1992@gmail.com', phone: '+880 1711-123456', basic: 75000, bonus: 8000, status: 'Active', attendance: 'Present' },
+        { id: '#102', name: 'Siam Hossain', dept: 'IT & Engineering', title: 'Full Stack Developer', email: 'dr.siamhossain.dev@gmail.com', phone: '+880 1722-234567', basic: 70000, bonus: 7000, status: 'Active', attendance: 'Present' },
+        { id: '#103', name: 'Md. Radoun Hossin Mukra', dept: 'IT & Engineering', title: 'Database Administrator', email: 'radwonhossain22@gmail.com', phone: '+880 1733-345678', basic: 75000, bonus: 8000, status: 'Active', attendance: 'Present' },
+        { id: '#104', name: 'Md. Shaharior Ahmed Karon', dept: 'Finance & Accounts', title: 'Financial Analyst', email: 'shkaron001@gmail.com', phone: '+880 1744-456789', basic: 58000, bonus: 6000, status: 'Active', attendance: 'Present' },
+        { id: '#105', name: 'Mst. Anamika Jahan', dept: 'Human Resources', title: 'HR Operations Lead', email: 'anamikajahan90@gmail.com', phone: '+880 1755-567890', basic: 65000, bonus: 6000, status: 'Active', attendance: 'Present' },
+        { id: '#106', name: 'Tanvir Ahmed Shanto', dept: 'IT & Engineering', title: 'Lead Systems Architect', email: 'tanvir.sys@gmail.com', phone: '+880 1766-678901', basic: 85000, bonus: 10000, status: 'Active', attendance: 'Present' },
+        { id: '#107', name: 'Mst. Ananna Khandaker', dept: 'Marketing & Sales', title: 'Brand & Marketing Strategist', email: 'gibranumarani105@gmail.com', phone: '+880 1777-789012', basic: 60000, bonus: 6000, status: 'Active', attendance: 'Present' },
+        { id: '#108', name: 'Md. Rakib Hasan Riyad', dept: 'Finance & Accounts', title: 'Senior Accounts Officer', email: 'hasanriyad2015@gmail.com', phone: '+880 1788-890123', basic: 60000, bonus: 5500, status: 'Active', attendance: 'Present' },
+        { id: '#109', name: 'Most. Khadija Khatun', dept: 'Human Resources', title: 'Talent Acquisition Specialist', email: 'dharanemarakiat307@gmail.com', phone: '+880 1799-901234', basic: 52000, bonus: 4500, status: 'Active', attendance: 'Present' },
+        { id: '#110', name: 'Md. Rezwan Ahmed Ratul', dept: 'IT & Engineering', title: 'Frontend Engineer', email: '07rezwanahmedratul.tech@gmail.com', phone: '+880 1811-123456', basic: 58000, bonus: 5000, status: 'Active', attendance: 'Present' },
+        { id: '#111', name: 'Marufina Abdullah Rifat', dept: 'Marketing & Sales', title: 'Digital Content Executive', email: 'dharanemarakiatsulat@gmail.com', phone: '+880 1822-234567', basic: 48000, bonus: 4000, status: 'Active', attendance: 'Present' },
+        { id: '#112', name: 'Md. Rabbi', dept: 'Operations & Logistics', title: 'Supply Chain Coordinator', email: '07rabbi188@gmail.com', phone: '+880 1833-345678', basic: 52000, bonus: 4500, status: 'Active', attendance: 'Present' },
+        { id: '#113', name: 'Mst. Mushkat Jahan Shila', dept: 'Marketing & Sales', title: 'Public Relations Officer', email: 'mushkatshila@gmail.com', phone: '+880 1844-456789', basic: 48000, bonus: 4000, status: 'Active', attendance: 'Present' },
+        { id: '#114', name: 'Saj Ahmad Rafi', dept: 'IT & Engineering', title: 'Network & Security Engineer', email: '174rafi@gmail.com', phone: '+880 1855-567890', basic: 70000, bonus: 7000, status: 'Active', attendance: 'Present' },
+        { id: '#115', name: 'Md. Sabbir Hossain Rahat', dept: 'Operations & Logistics', title: 'Logistics Operations Manager', email: 'sabbir190@gmail.com', phone: '+880 1866-678901', basic: 55000, bonus: 6000, status: 'Active', attendance: 'Present' },
+        { id: '#116', name: 'Abid Hasan Hujayfa', dept: 'Finance & Accounts', title: 'Tax & Compliance Executive', email: '03abidhassanhuzaifa@gmail.com', phone: '+880 1877-789012', basic: 54000, bonus: 4500, status: 'Active', attendance: 'Present' },
+        { id: '#118', name: 'Md. Irtaj Hassan Nibir', dept: 'IT & Engineering', title: 'Quality Assurance Engineer', email: 'irtajnibir789@gmail.com', phone: '+880 1899-901234', basic: 55000, bonus: 6000, status: 'Active', attendance: 'Present' }
+      ],
+
+      // Former staff archive
+      formerEmployees: [
+        {
+          id: '#098',
+          name: 'Nayeem Hasan',
+          dept: 'IT & Engineering',
+          title: 'Senior Frontend Developer',
+          email: 'nayeem.dev@gmail.com',
+          phone: '+880 1711-998877',
+          basic: 68000,
+          bonus: 6000,
+          separationDate: '2026-09-30',
+          separationReason: 'Voluntary Resignation',
+          notes: 'Accepted position abroad. Completed project handover and asset clearance.'
+        }
+      ]
+    };
+
+    let deptPayrollChartInstance = null;
+    let attendanceDoughnutChartInstance = null;
+
+    function formatCurrency(num) {
+      return '$' + Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-center space-x-2 text-xs font-bold px-4 py-3 rounded-xl shadow-xl border text-white transition-all transform duration-300 translate-y-2 opacity-0 bg-[#1e1b4b] border-purple-800';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-rose-400 text-sm"></i><span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function switchTab(tabId) {
+      APP_STATE.currentTab = tabId;
+      const tabs = ['dashboard', 'directory', 'addEmployee', 'departments', 'attendance', 'payroll', 'reports'];
+      tabs.forEach(id => {
+        const el = document.getElementById(`tab-${id}`);
+        if (el) {
+          if (id === tabId) el.classList.remove('hidden');
+          else el.classList.add('hidden');
+        }
+      });
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.getAttribute('data-tab') === tabId;
+        if (active) {
+          btn.className = 'nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-extrabold text-xs transition-all duration-200 text-white bg-gradient-to-r from-rose-500 to-pink-500 shadow-md shadow-rose-500/30';
+          const icon = btn.querySelector('i');
+          if (icon) icon.className = icon.className.replace(/text-pink-400/, 'text-white');
+        } else {
+          btn.className = 'nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all duration-200 text-slate-300 hover:text-white hover:bg-purple-900/30';
+          const icon = btn.querySelector('i');
+          if (icon) icon.className = icon.className.replace(/text-white/, 'text-pink-400');
+        }
+      });
+
+      document.getElementById('sidebar').classList.add('-translate-x-full');
+
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'directory') renderDirectory();
+      if (tabId === 'departments') renderDepartments();
+      if (tabId === 'attendance') renderAttendance();
+      if (tabId === 'payroll') renderPayroll();
+      if (tabId === 'reports') renderReports();
+    }
+
+    function switchWorkforceSubTab(subTab) {
+      APP_STATE.workforceSubTab = subTab;
+      const activeBtn = document.getElementById('subtabBtnActive');
+      const formerBtn = document.getElementById('subtabBtnFormer');
+      const activeContainer = document.getElementById('activeWorkforceContainer');
+      const formerContainer = document.getElementById('formerWorkforceContainer');
+
+      if (subTab === 'active') {
+        activeBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm flex items-center gap-2';
+        formerBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center gap-2';
+        activeContainer.classList.remove('hidden');
+        formerContainer.classList.add('hidden');
+      } else {
+        formerBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm flex items-center gap-2';
+        activeBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center gap-2';
+        activeContainer.classList.add('hidden');
+        formerContainer.classList.remove('hidden');
+      }
+      renderDirectory();
+    }
+
+    function renderDashboard() {
+      const totalStaff = APP_STATE.employees.length;
+      const totalPayroll = APP_STATE.employees.reduce((acc, emp) => acc + emp.basic + emp.bonus, 0);
+      const presentCount = APP_STATE.employees.filter(e => e.attendance === 'Present').length;
+      const absentCount = APP_STATE.employees.filter(e => e.attendance === 'Absent').length;
+      const leaveCount = APP_STATE.employees.filter(e => e.attendance === 'Leave').length;
+      const attRate = totalStaff > 0 ? Math.round((presentCount / totalStaff) * 100) : 0;
+
+      document.getElementById('statTotalEmployees').textContent = totalStaff;
+      document.getElementById('statTotalDepts').textContent = APP_STATE.departments.length;
+      document.getElementById('statMonthlyPayroll').textContent = formatCurrency(totalPayroll);
+      document.getElementById('statAttendanceRate').textContent = `${attRate}%`;
+      document.getElementById('statPresentCount').textContent = presentCount;
+      document.getElementById('dashPresentCount').textContent = presentCount;
+      document.getElementById('dashAbsentCount').textContent = absentCount;
+      document.getElementById('dashLeaveCount').textContent = leaveCount;
+
+      const deptTableBody = document.getElementById('dashboardDeptTableBody');
+      deptTableBody.innerHTML = '';
+      const deptPayrollData = [];
+      const deptLabels = [];
+
+      APP_STATE.departments.forEach(dept => {
+        const staffInDept = APP_STATE.employees.filter(e => e.dept === dept.name);
+        const headcount = staffInDept.length;
+        const deptPayroll = staffInDept.reduce((acc, e) => acc + e.basic + e.bonus, 0);
+        const sharePercent = totalStaff > 0 ? Math.round((headcount / totalStaff) * 100) : 0;
+
+        deptLabels.push(dept.name);
+        deptPayrollData.push(deptPayroll);
+
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition-colors';
+        row.innerHTML = `
+          <td class="py-3 px-3">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-7 h-7 rounded-lg bg-pink-50 text-rose-600 flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid ${dept.icon}"></i>
+              </div>
+              <div>
+                <p class="font-extrabold text-slate-900 text-xs">${dept.name}</p>
+                <p class="text-[10px] text-slate-400 font-mono">${dept.code}</p>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-3 text-center">
+            <span class="font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-[11px] font-mono">${headcount} Staff</span>
+          </td>
+          <td class="py-3 px-3 text-right font-mono font-black text-rose-600">${formatCurrency(deptPayroll)}</td>
+          <td class="py-3 px-3">
+            <div class="flex items-center space-x-2">
+              <div class="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-2 rounded-full" style="width: ${sharePercent}%"></div>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-600 w-8 text-right">${sharePercent}%</span>
+            </div>
+          </td>
+        `;
+        deptTableBody.appendChild(row);
+      });
+
+      const ctxPayroll = document.getElementById('deptPayrollChart');
+      if (ctxPayroll) {
+        if (deptPayrollChartInstance) deptPayrollChartInstance.destroy();
+        deptPayrollChartInstance = new Chart(ctxPayroll, {
+          type: 'bar',
+          data: {
+            labels: deptLabels,
+            datasets: [{
+              data: deptPayrollData,
+              backgroundColor: '#f43f5e',
+              borderRadius: 6,
+              hoverBackgroundColor: '#e11d48'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: val => '$' + (val / 1000) + 'k', font: { size: 9, family: 'JetBrains Mono' } } },
+              x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+            }
+          }
+        });
+      }
+
+      const ctxAtt = document.getElementById('attendanceDoughnutChart');
+      if (ctxAtt) {
+        if (attendanceDoughnutChartInstance) attendanceDoughnutChartInstance.destroy();
+        attendanceDoughnutChartInstance = new Chart(ctxAtt, {
+          type: 'doughnut',
+          data: {
+            labels: ['Present', 'Absent', 'On Leave'],
+            datasets: [{
+              data: [presentCount, absentCount, leaveCount],
+              backgroundColor: ['#10b981', '#f43f5e', '#f59e0b'],
+              borderWidth: 0,
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { size: 10 } }
+              }
+            },
+            cutout: '70%'
+          }
+        });
+      }
+    }
+
+    // Directory Render
+    function renderDirectory() {
+      const searchVal = document.getElementById('employeeSearchInput').value.toLowerCase().trim();
+      const deptVal = document.getElementById('employeeDeptFilter').value;
+      const statusVal = document.getElementById('employeeStatusFilter').value;
+
+      document.getElementById('activeStaffCountPill').textContent = APP_STATE.employees.length;
+      document.getElementById('formerStaffCountPill').textContent = APP_STATE.formerEmployees.length;
+
+      if (APP_STATE.workforceSubTab === 'active') {
+        const filtered = APP_STATE.employees.filter(emp => {
+          const matchesSearch = emp.name.toLowerCase().includes(searchVal) ||
+                                emp.title.toLowerCase().includes(searchVal) ||
+                                emp.email.toLowerCase().includes(searchVal) ||
+                                emp.id.toLowerCase().includes(searchVal);
+          const matchesDept = (deptVal === 'ALL') || (emp.dept === deptVal);
+          const matchesStatus = (statusVal === 'ALL') || (emp.status === statusVal);
+          return matchesSearch && matchesDept && matchesStatus;
+        });
+
+        document.getElementById('directoryCountBadge').textContent = `Showing ${filtered.length} of ${APP_STATE.employees.length} active staff`;
+
+        const tbody = document.getElementById('directoryTableBody');
+        tbody.innerHTML = '';
+
+        filtered.forEach(emp => {
+          const initials = emp.name.split(' ').filter(n => !n.startsWith('Md') && !n.startsWith('Mst')).slice(0, 2).map(n => n[0]).join('') || emp.name.slice(0, 2);
+          const row = document.createElement('tr');
+          row.className = 'hover:bg-slate-50 transition-colors';
+          row.innerHTML = `
+            <td class="py-3 px-4">
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#1e1b4b] text-pink-300 font-black text-xs flex items-center justify-center flex-shrink-0">
+                  ${initials.toUpperCase()}
+                </div>
+                <div>
+                  <p class="font-extrabold text-slate-900 text-xs">${emp.name}</p>
+                  <span class="font-mono text-[10px] text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded font-bold">${emp.id}</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              <p class="font-bold text-slate-800">${emp.title}</p>
+              <p class="text-[11px] text-slate-500">${emp.dept}</p>
+            </td>
+            <td class="py-3 px-4">
+              <p class="text-slate-700 font-medium">${emp.email}</p>
+              <p class="text-[11px] text-slate-400 font-mono">${emp.phone}</p>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <p class="font-mono font-black text-slate-900">${formatCurrency(emp.basic)}</p>
+              <p class="text-[10px] text-emerald-600 font-mono font-bold">+${formatCurrency(emp.bonus)} bonus</p>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                emp.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+              }">
+                ${emp.status}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <div class="flex items-center justify-center space-x-1.5">
+                <button onclick="openUpdateEmployeeModal('${emp.id}')" title="Update Details & Promote Employee" class="px-2.5 py-1.5 bg-[#1e1b4b] hover:bg-indigo-900 text-white rounded-xl text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all">
+                  <i class="fa-solid fa-pen-to-square text-pink-400"></i>
+                  <span>Update Details</span>
+                </button>
+                <button onclick="openOffboardModal('${emp.id}')" title="Remove / Offboard Employee" class="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[11px] font-extrabold shadow-xs flex items-center gap-1 transition-all">
+                  <i class="fa-solid fa-user-minus"></i>
+                  <span>Remove</span>
+                </button>
+                <button onclick="openPayslipModal('${emp.id}')" title="View Payslip" class="p-1.5 text-slate-500 hover:text-rose-600 rounded-lg hover:bg-slate-100 transition-colors">
+                  <i class="fa-solid fa-receipt text-sm"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        const filteredFormer = APP_STATE.formerEmployees.filter(emp => {
+          return emp.name.toLowerCase().includes(searchVal) || emp.id.toLowerCase().includes(searchVal);
+        });
+
+        document.getElementById('directoryCountBadge').textContent = `Showing ${filteredFormer.length} archived former staff`;
+        const formerTbody = document.getElementById('formerTableBody');
+        formerTbody.innerHTML = '';
+
+        filteredFormer.forEach(emp => {
+          const row = document.createElement('tr');
+          row.className = 'hover:bg-slate-50 transition-colors';
+          row.innerHTML = `
+            <td class="py-3 px-4">
+              <p class="font-bold text-slate-900">${emp.name}</p>
+              <span class="font-mono text-[10px] text-slate-500">${emp.id} &bull; ${emp.email}</span>
+            </td>
+            <td class="py-3 px-4">
+              <p class="font-bold text-slate-800">${emp.title}</p>
+              <p class="text-[11px] text-slate-500">${emp.dept}</p>
+            </td>
+            <td class="py-3 px-4 font-mono text-slate-700 text-xs">
+              ${emp.separationDate}
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                ${emp.separationReason}
+              </span>
+              <p class="text-[11px] text-slate-500 italic mt-0.5">${emp.notes}</p>
+            </td>
+            <td class="py-3 px-4 text-right font-mono font-bold text-slate-700">
+              ${formatCurrency(emp.basic)}
+            </td>
+            <td class="py-3 px-4 text-center">
+              <button onclick="reactivateEmployee('${emp.id}')" class="px-3 py-1.5 bg-[#1e1b4b] hover:bg-indigo-900 text-white rounded-xl text-[11px] font-bold shadow-xs">
+                <i class="fa-solid fa-rotate-left mr-1 text-pink-400"></i> Rehire Staff
+              </button>
+            </td>
+          `;
+          formerTbody.appendChild(row);
+        });
+      }
+    }
+
+    document.getElementById('employeeSearchInput').addEventListener('input', renderDirectory);
+    document.getElementById('employeeDeptFilter').addEventListener('change', renderDirectory);
+    document.getElementById('employeeStatusFilter').addEventListener('change', renderDirectory);
+
+    // Update / Promote Logic
+    function openUpdateEmployeeModal(empId) {
+      const emp = APP_STATE.employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      document.getElementById('editEmpTargetId').value = emp.id;
+      document.getElementById('editEmpIdDisplay').value = emp.id;
+      document.getElementById('editEmpName').value = emp.name;
+      document.getElementById('editEmpDept').value = emp.dept;
+      document.getElementById('editEmpTitle').value = emp.title;
+      document.getElementById('editEmpSalary').value = emp.basic;
+      document.getElementById('editEmpBonus').value = emp.bonus;
+      document.getElementById('editEmpEmail').value = emp.email;
+      document.getElementById('editEmpPhone').value = emp.phone;
+
+      document.getElementById('updateEmployeeModal').classList.remove('hidden');
+    }
+
+    function closeUpdateEmployeeModal() {
+      document.getElementById('updateEmployeeModal').classList.add('hidden');
+    }
+
+    function applySalaryIncrement(percentage) {
+      const salaryInput = document.getElementById('editEmpSalary');
+      const current = parseFloat(salaryInput.value) || 0;
+      const updated = Math.round(current * (1 + (percentage / 100)));
+      salaryInput.value = updated;
+      showToast(`Applied +${percentage}% increment! New Basic Salary: ${formatCurrency(updated)}`);
+    }
+
+    function handleSaveEmployeeUpdate(e) {
+      e.preventDefault();
+      const id = document.getElementById('editEmpTargetId').value;
+      const emp = APP_STATE.employees.find(e => e.id === id);
+      if (!emp) return;
+
+      const oldTitle = emp.title;
+      const oldSalary = emp.basic;
+
+      emp.name = document.getElementById('editEmpName').value.trim();
+      emp.dept = document.getElementById('editEmpDept').value;
+      emp.title = document.getElementById('editEmpTitle').value.trim();
+      emp.basic = parseFloat(document.getElementById('editEmpSalary').value) || 0;
+      emp.bonus = parseFloat(document.getElementById('editEmpBonus').value) || 0;
+      emp.email = document.getElementById('editEmpEmail').value.trim();
+      emp.phone = document.getElementById('editEmpPhone').value.trim();
+
+      closeUpdateEmployeeModal();
+      
+      let msg = `Updated details for ${emp.name}`;
+      if (oldTitle !== emp.title || oldSalary !== emp.basic) {
+        msg = `Promoted ${emp.name} to ${emp.title} with updated salary ${formatCurrency(emp.basic)}!`;
+      }
+      showToast(msg);
+
+      renderDirectory();
+      renderDashboard();
+      renderPayroll();
+    }
+
+    // Remove / Offboard Logic (Archive to former staff)
+    function openOffboardModal(empId) {
+      const emp = APP_STATE.employees.find(e => e.id === empId);
+      if (!emp) return;
+
+      document.getElementById('offboardTargetId').value = emp.id;
+      document.getElementById('offboardEmpName').textContent = emp.name;
+      document.getElementById('offboardEmpRole').textContent = `${emp.title} (${emp.id}) &bull; ${emp.dept}`;
+      document.getElementById('offboardDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('offboardNotes').value = '';
+
+      document.getElementById('offboardModal').classList.remove('hidden');
+    }
+
+    function closeOffboardModal() {
+      document.getElementById('offboardModal').classList.add('hidden');
+    }
+
+    function handleConfirmOffboard(e) {
+      e.preventDefault();
+      const id = document.getElementById('offboardTargetId').value;
+      const idx = APP_STATE.employees.findIndex(e => e.id === id);
+      if (idx === -1) return;
+
+      const emp = APP_STATE.employees[idx];
+      const reason = document.getElementById('offboardReason').value;
+      const date = document.getElementById('offboardDate').value;
+      const notes = document.getElementById('offboardNotes').value.trim();
+
+      const formerRecord = {
+        ...emp,
+        separationDate: date,
+        separationReason: reason,
+        notes: notes || 'Voluntary resignation handover verified.'
+      };
+
+      APP_STATE.formerEmployees.unshift(formerRecord);
+      APP_STATE.employees.splice(idx, 1);
+
+      closeOffboardModal();
+      showToast(`Employee "${emp.name}" removed from active team & preserved in Former Archive.`);
+
+      renderDirectory();
+      renderDashboard();
+      renderPayroll();
+    }
+
+    function reactivateEmployee(empId) {
+      const idx = APP_STATE.formerEmployees.findIndex(e => e.id === empId);
+      if (idx === -1) return;
+
+      const emp = APP_STATE.formerEmployees[idx];
+      delete emp.separationDate;
+      delete emp.separationReason;
+      delete emp.notes;
+      emp.status = 'Active';
+      emp.attendance = 'Present';
+
+      APP_STATE.employees.unshift(emp);
+      APP_STATE.formerEmployees.splice(idx, 1);
+
+      showToast(`Restored "${emp.name}" to Active Workforce!`);
+      renderDirectory();
+      renderDashboard();
+    }
+
+    // Departments Render (BUDGET STRICTLY REMOVED AS REQUESTED)
+    function renderDepartments() {
+      const grid = document.getElementById('departmentsGrid');
+      grid.innerHTML = '';
+
+      APP_STATE.departments.forEach(dept => {
+        const staffList = APP_STATE.employees.filter(e => e.dept === dept.name);
+        const headcount = staffList.length;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between hover:shadow-md transition-all';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-xl bg-pink-50 text-rose-600 flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid ${dept.icon}"></i>
+              </div>
+              <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full">
+                ${dept.code}
+              </span>
+            </div>
+
+            <h4 class="font-extrabold text-slate-900 text-sm">${dept.name}</h4>
+            <p class="text-[11px] text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> ${dept.location}</p>
+
+            <div class="mt-4 pt-4 border-t border-slate-100 text-xs">
+              <span class="text-slate-400 text-[10px] uppercase font-bold">Staff Headcount</span>
+              <p class="text-xl font-black text-slate-900 mt-0.5 font-mono">${headcount} Staff Members</p>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-end text-xs">
+            <button onclick="filterStaffByDept('${dept.name}')" class="text-rose-600 hover:text-rose-700 font-bold text-xs flex items-center gap-1">
+              View Staff on Dashboard <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterStaffByDept(deptName) {
+      document.getElementById('employeeDeptFilter').value = deptName;
+      switchTab('directory');
+    }
+
+    function openAddDeptModal() { document.getElementById('addDeptModal').classList.remove('hidden'); }
+    function closeAddDeptModal() { document.getElementById('addDeptModal').classList.add('hidden'); }
+    function handleCreateDepartment(e) {
+      e.preventDefault();
+      const name = document.getElementById('newDeptName').value.trim();
+      const code = document.getElementById('newDeptCode').value.trim().toUpperCase();
+      const location = document.getElementById('newDeptLocation').value.trim();
+
+      APP_STATE.departments.push({
+        id: APP_STATE.departments.length + 1,
+        name: name,
+        code: code,
+        location: location,
+        icon: 'fa-building'
+      });
+
+      closeAddDeptModal();
+      document.getElementById('addDeptForm').reset();
+      showToast(`Department "${name}" created!`);
+      renderDepartments();
+      renderDashboard();
+    }
+
+    // Onboarding New Employee Form Submit
+    function handleCreateEmployee(e) {
+      e.preventDefault();
+      const newEmp = {
+        id: document.getElementById('formEmpId').value.trim(),
+        name: document.getElementById('formEmpName').value.trim(),
+        dept: document.getElementById('formEmpDept').value,
+        title: document.getElementById('formEmpTitle').value.trim(),
+        email: document.getElementById('formEmpEmail').value.trim(),
+        phone: document.getElementById('formEmpPhone').value.trim() || '+880 1700-000000',
+        status: document.getElementById('formEmpStatus').value || 'Active',
+        basic: parseFloat(document.getElementById('formEmpSalary').value) || 50000,
+        bonus: parseFloat(document.getElementById('formEmpBonus').value) || 0,
+        attendance: 'Present'
+      };
+
+      APP_STATE.employees.unshift(newEmp);
+      document.getElementById('onboardingForm').reset();
+      showToast(`Employee "${newEmp.name}" registered successfully!`);
+      switchTab('directory');
+    }
+
+    // Attendance Log
+    function renderAttendance() {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentAttendanceDateText').textContent = APP_STATE.attendanceDate.toLocaleDateString('en-US', options);
+
+      const tbody = document.getElementById('attendanceTableBody');
+      tbody.innerHTML = '';
+
+      APP_STATE.employees.forEach(emp => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition-colors';
+        row.innerHTML = `
+          <td class="py-3 px-4 font-mono font-bold text-[#1e1b4b] text-[11px]">${emp.id}</td>
+          <td class="py-3 px-4 font-bold text-slate-900">${emp.name}</td>
+          <td class="py-3 px-4 text-slate-700">${emp.dept}</td>
+          <td class="py-3 px-4 text-slate-600">${emp.title}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="inline-flex rounded-xl p-1 bg-slate-100 border border-slate-200 gap-1">
+              <button onclick="toggleAttendance('${emp.id}', 'Present')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                emp.attendance === 'Present' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }">
+                <i class="fa-solid fa-check mr-1"></i> Present
+              </button>
+              <button onclick="toggleAttendance('${emp.id}', 'Absent')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                emp.attendance === 'Absent' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }">
+                <i class="fa-solid fa-xmark mr-1"></i> Absent
+              </button>
+              <button onclick="toggleAttendance('${emp.id}', 'Leave')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                emp.attendance === 'Leave' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }">
+                <i class="fa-solid fa-clock mr-1"></i> Leave
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function toggleAttendance(empId, status) {
+      const emp = APP_STATE.employees.find(e => e.id === empId);
+      if (emp) {
+        emp.attendance = status;
+        renderAttendance();
+        renderDashboard();
+      }
+    }
+
+    function markAllAttendance(status) {
+      APP_STATE.employees.forEach(e => e.attendance = status);
+      renderAttendance();
+      renderDashboard();
+      showToast(`All active staff marked as "${status}"!`);
+    }
+
+    function saveAttendanceSheet() {
+      const dateStr = APP_STATE.attendanceDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+      showToast(`Attendance records for ${dateStr} have been saved successfully!`);
+    }
+
+    function changeAttendanceDate(delta) {
+      APP_STATE.attendanceDate.setDate(APP_STATE.attendanceDate.getDate() + delta);
+      renderAttendance();
+    }
+
+    // Payroll & Salary Render
+    function renderPayroll() {
+      const totalMonthly = APP_STATE.employees.reduce((acc, e) => acc + e.basic + e.bonus, 0);
+      const totalBonus = APP_STATE.employees.reduce((acc, e) => acc + e.bonus, 0);
+      const avgSalary = APP_STATE.employees.length > 0 ? (totalMonthly / APP_STATE.employees.length) : 0;
+
+      document.getElementById('payrollTotalMonthly').textContent = formatCurrency(totalMonthly);
+      document.getElementById('payrollTotalBonuses').textContent = formatCurrency(totalBonus);
+      document.getElementById('payrollAvgSalary').textContent = formatCurrency(avgSalary);
+
+      const tbody = document.getElementById('payrollTableBody');
+      tbody.innerHTML = '';
+
+      APP_STATE.employees.forEach(emp => {
+        const gross = emp.basic + emp.bonus;
+        const deduction = Math.round(gross * 0.05);
+        const net = gross - deduction;
+
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition-colors';
+        row.innerHTML = `
+          <td class="py-3 px-4 font-sans">
+            <p class="font-bold text-slate-900">${emp.name}</p>
+            <p class="text-[10px] text-slate-500 font-mono">${emp.id}</p>
+          </td>
+          <td class="py-3 px-4 text-slate-700 font-sans">${emp.dept}</td>
+          <td class="py-3 px-4 text-right text-slate-800">${formatCurrency(emp.basic)}</td>
+          <td class="py-3 px-4 text-right text-emerald-600 font-bold">+${formatCurrency(emp.bonus)}</td>
+          <td class="py-3 px-4 text-right font-bold text-slate-900">${formatCurrency(gross)}</td>
+          <td class="py-3 px-4 text-right text-rose-600 font-bold">-${formatCurrency(deduction)}</td>
+          <td class="py-3 px-4 text-right font-black text-rose-600 bg-rose-50/40">${formatCurrency(net)}</td>
+          <td class="py-3 px-4 text-center font-sans">
+            <button onclick="openPayslipModal('${emp.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#1e1b4b] hover:bg-indigo-900 text-white shadow-xs">
+              <i class="fa-solid fa-receipt mr-1 text-pink-400"></i> Payslip
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Payslip Modal
+    function openPayslipModal(empId) {
+      let emp = APP_STATE.employees.find(e => e.id === empId);
+      if (!emp) emp = APP_STATE.formerEmployees.find(e => e.id === empId);
+      if (!emp) return;
+
+      const gross = emp.basic + emp.bonus;
+      const deduction = Math.round(gross * 0.05);
+      const net = gross - deduction;
+
+      document.getElementById('payslipCompany').textContent = APP_STATE.companyName;
+      document.getElementById('payslipName').textContent = emp.name;
+      document.getElementById('payslipEmpId').textContent = emp.id;
+      document.getElementById('payslipRole').textContent = emp.title;
+      document.getElementById('payslipDept').textContent = emp.dept;
+      document.getElementById('payslipEmail').textContent = emp.email;
+      document.getElementById('payslipBasic').textContent = formatCurrency(emp.basic);
+      document.getElementById('payslipBonus').textContent = formatCurrency(emp.bonus);
+      document.getElementById('payslipGross').textContent = formatCurrency(gross);
+      document.getElementById('payslipDeduction').textContent = '-' + formatCurrency(deduction);
+      document.getElementById('payslipNet').textContent = formatCurrency(net);
+
+      document.getElementById('payslipModal').classList.remove('hidden');
+    }
+
+    function closePayslipModal() {
+      document.getElementById('payslipModal').classList.add('hidden');
+    }
+
+    // Reports Render (Q1 PDF Spec)
+    function renderReports() {
+      const tbody = document.getElementById('masterReportTableBody');
+      tbody.innerHTML = '';
+      const attDateStr = APP_STATE.attendanceDate.toISOString().split('T')[0];
+
+      APP_STATE.employees.forEach(emp => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition-colors';
+        row.innerHTML = `
+          <td class="py-3 px-4 font-bold text-slate-900">${emp.name}</td>
+          <td class="py-3 px-4 text-slate-700">${emp.dept}</td>
+          <td class="py-3 px-4 text-slate-500 font-mono text-[11px]">${emp.email}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-slate-900">${formatCurrency(emp.basic)}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-emerald-600">+${formatCurrency(emp.bonus)}</td>
+          <td class="py-3 px-4 text-center font-mono text-[11px] text-rose-600">${attDateStr}</td>
+          <td class="py-3 px-4 text-center">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono ${
+              emp.attendance === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+            }">
+              ${emp.attendance}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // CSV Exporters
+    function exportPayrollCSV() {
+      let csv = 'Employee ID,Full Name,Department,Basic Pay,Bonus,Gross Pay,Deduction,Net Payout\n';
+      APP_STATE.employees.forEach(emp => {
+        const gross = emp.basic + emp.bonus;
+        const ded = Math.round(gross * 0.05);
+        const net = gross - ded;
+        csv += `"${emp.id}","${emp.name}","${emp.dept}",${emp.basic},${emp.bonus},${gross},${ded},${net}\n`;
+      });
+      downloadFile(csv, 'payroll_sheet.csv', 'text/csv');
+      showToast('Payroll CSV exported!');
+    }
+
+    function exportMasterReportCSV() {
+      let csv = 'employee_name,department_name,email,basic_salary,bonus,attendance_date,status\n';
+      const attDateStr = APP_STATE.attendanceDate.toISOString().split('T')[0];
+      APP_STATE.employees.forEach(emp => {
+        csv += `"${emp.name}","${emp.dept}","${emp.email}",${emp.basic},${emp.bonus},"${attDateStr}","${emp.attendance}"\n`;
+      });
+      downloadFile(csv, 'srm_hr_master_report_q1.csv', 'text/csv');
+      showToast('Master Report CSV exported!');
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Mobile Menu Toggle
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+      });
+    }
+    if (closeSidebarBtn) {
+      closeSidebarBtn.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+      });
+    }
+
+    
+    function openUpdateInfoModal() {
+      document.getElementById('infoPlatformName').value = APP_STATE.companyName;
+      document.getElementById('infoAdminName').value = APP_STATE.adminName;
+      document.getElementById('infoAdminRole').value = APP_STATE.adminRole;
+      const currentNotice = document.getElementById('systemNoticeText').textContent.trim();
+      document.getElementById('infoAnnouncement').value = currentNotice;
+      document.getElementById('updateInfoModal').classList.remove('hidden');
+    }
+
+    function closeUpdateInfoModal() {
+      document.getElementById('updateInfoModal').classList.add('hidden');
+    }
+
+    function handleSaveSystemInfo(e) {
+      e.preventDefault();
+      const newPlatform = document.getElementById('infoPlatformName').value.trim() || 'SRM HRMS';
+      const newAdmin = document.getElementById('infoAdminName').value.trim() || 'Sabiha Rumman Medha';
+      const newRole = document.getElementById('infoAdminRole').value.trim() || 'Head of HR & Admin';
+      const newNotice = document.getElementById('infoAnnouncement').value.trim();
+
+      APP_STATE.companyName = newPlatform;
+      APP_STATE.adminName = newAdmin;
+      APP_STATE.adminRole = newRole;
+
+      if (newNotice) {
+        document.getElementById('systemNoticeText').textContent = newNotice;
+      }
+
+      closeUpdateInfoModal();
+      showToast('Front information and system notice updated successfully!');
+    }
+
+    function initLiveFrontClock() {
+      function tick() {
+        const now = new Date();
+        const optionsDate = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+        const dateStr = now.toLocaleDateString('en-US', optionsDate);
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        const headerDateEl = document.getElementById('frontHeaderDate');
+        const headerClockEl = document.getElementById('frontHeaderClock');
+        const dashDateEl = document.getElementById('dashLiveDate');
+
+        if (headerDateEl) headerDateEl.textContent = dateStr;
+        if (headerClockEl) headerClockEl.textContent = timeStr;
+        if (dashDateEl) dashDateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initLiveFrontClock();
+      renderDashboard();
+    });
+  </script>
+</body>
+</html>
